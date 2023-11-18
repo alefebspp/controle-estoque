@@ -67,6 +67,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
     setUser(undefined);
     setIsLoggedIn(false);
     window.electron.store.delete('user-email');
+    navigate('/');
   };
 
   useEffect(() => {
