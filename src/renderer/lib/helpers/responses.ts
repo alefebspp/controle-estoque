@@ -1,4 +1,4 @@
-import { DefaultResponse } from '../types/services/response';
+import { DefaultResponse } from '../../types/services/response';
 
 export const errorDefaultResponse = (): DefaultResponse => ({
   success: false,

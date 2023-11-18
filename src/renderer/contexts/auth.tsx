@@ -1,12 +1,13 @@
 import { createContext, FC, ReactNode, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 
 import { DefaultResponse } from '../types/services/response';
 import { LoginRequest } from '../types/services/auth/requests';
 import { User } from '../types/types';
 
-import { db } from '../db/firebase';
-import { errorDefaultResponse } from '../helpers/responses';
+import { db } from '../config/db/firebase';
+import { errorDefaultResponse } from '../lib/helpers/responses';
 
 export interface IAuthContextProps {
   user: User | undefined;
@@ -24,6 +25,7 @@ const AuthContext = createContext<IAuthContextProps>({} as IAuthContextProps);
 export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User>();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const authErrorResponse = (): DefaultResponse => ({
     success: false,
@@ -47,6 +49,7 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
         setUser({ id, name });
         setIsLoggedIn(true);
         window.electron.store.set('user-email', email);
+        navigate('/home');
 
         return {
           success: true,

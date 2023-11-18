@@ -3,15 +3,15 @@ import { cva } from 'class-variance-authority';
 import Spinner from '../Loaders/Spinner';
 
 import { cn } from '../../lib/util';
-import { ButtonProps } from '../../types/components';
+import { ButtonProps } from './interface';
 
 export const buttonVariants = cva(
   'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: 'bg-blue-500 text-white hover:bg-blue-600',
-        secondary: 'bg-green-500 text-white hover:bg-green-600',
+        default: 'bg-primary-light text-white hover:bg-primary-dark',
+        secondary: 'bg-secondary-light text-white hover:bg-secondary-dark',
         destructive:
           'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:

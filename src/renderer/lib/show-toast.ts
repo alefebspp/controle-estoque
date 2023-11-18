@@ -1,15 +1,17 @@
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 
 export function showErrorToast(errorMessage: string) {
-  toast.error(errorMessage, {
-    theme: 'colored',
-    draggable: false,
-  });
+  toast.error(errorMessage, { id: 'toast-error' });
 }
 
 export function showSuccessToast(messageSuccess: string) {
-  toast.success(messageSuccess, {
-    theme: 'colored',
-    draggable: false,
-  });
+  toast.success(messageSuccess, { id: 'toast-success' });
+}
+
+export function showLoadingToast(message: string) {
+  toast.loading(message, { id: 'loading-toast' });
+}
+
+export function dismissLoadingToast() {
+  toast.dismiss('loading-toast');
 }

@@ -58,20 +58,19 @@ const Login = () => {
             name="password"
             errors={errors}
             type={showPassword ? 'text' : 'password'}
-            icon={
-              showPassword ? (
-                <EyeOpenIcon
-                  className="cursor-pointer"
-                  onClick={handleShowPassword}
-                />
-              ) : (
-                <EyeClosedIcon
-                  className="cursor-pointer"
-                  onClick={handleShowPassword}
-                />
-              )
-            }
-          />
+          >
+            {showPassword ? (
+              <EyeOpenIcon
+                className="cursor-pointer mr-2"
+                onClick={handleShowPassword}
+              />
+            ) : (
+              <EyeClosedIcon
+                className="cursor-pointer mr-2"
+                onClick={handleShowPassword}
+              />
+            )}
+          </Input>
           <Button variant="secondary" isLoading={isSubmitting} type="submit">
             Login
           </Button>

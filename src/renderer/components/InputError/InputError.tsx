@@ -1,5 +1,5 @@
 import { ErrorMessage } from '@hookform/error-message';
-import { InputErrorProps } from '../../types/components';
+import { InputErrorProps } from './interface';
 
 const InputError = ({ errors, name }: InputErrorProps) => {
   return (

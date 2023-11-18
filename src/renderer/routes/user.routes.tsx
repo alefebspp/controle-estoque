@@ -1,20 +1,22 @@
 import { Routes, Route } from 'react-router-dom';
-import useAuthContext from '../hooks/useAuth';
+
+import Home from '../pages/Home/Home';
+import Products from '../pages/Products/Products';
+import {
+  CreateProduct,
+  Main,
+  UpdateProduct,
+} from '../pages/Products/Sections/';
 
 const UserRoutes = () => {
-  const { user, logout } = useAuthContext();
-
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <div>
-            <h1>{`Olá, ${user?.name}`}</h1>
-            <button onClick={logout}>Sair</button>
-          </div>
-        }
-      />
+      <Route path="/home" element={<Home />} />
+      <Route path="/products" element={<Products />}>
+        <Route path="" element={<Main />} />
+        <Route path="create" element={<CreateProduct />} />
+        <Route path=":productId" element={<UpdateProduct />} />
+      </Route>
     </Routes>
   );
 };
