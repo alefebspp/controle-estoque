@@ -75,13 +75,15 @@ export const UpdateProduct = () => {
             register={register}
             errors={errors}
             name="description"
-            placeholder="Descrição"
+            placeholder="Digite uma descrição"
+            label="Descrição"
           />
           <Input
             register={register}
             errors={errors}
             name="sell_value"
-            placeholder="Valor de venda"
+            placeholder="Digite um valor"
+            label="Valor de venda"
             onChange={(e) => {
               setValue('sell_value', CURRENCYMask(e.target.value));
             }}
@@ -90,7 +92,8 @@ export const UpdateProduct = () => {
             register={register}
             errors={errors}
             name="stock_quantity"
-            placeholder="Qtd. estoque"
+            label="Qtd. estoque"
+            placeholder="Digite uma quantidade"
             type="number"
           />
           <Button

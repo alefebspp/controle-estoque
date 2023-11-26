@@ -4,7 +4,7 @@ import { PageLayoutProps, PageLayoutSectionProps } from './interface';
 
 import { cn } from '../../lib/util';
 
-const PageLayoutRoot = ({ children, title, sections }: PageLayoutProps) => {
+const PageLayout = ({ children, title, sections }: PageLayoutProps) => {
   return (
     <div className="w-full h-full flex flex-col">
       <header className="flex items-center justify-start w-full h-[80px] px-[15px] gap-[15px]">
@@ -22,6 +22,7 @@ const PageLayoutRoot = ({ children, title, sections }: PageLayoutProps) => {
                   icon={section.icon}
                   sectionPath={section.sectionPath}
                   pagePath={section.pagePath}
+                  label={section.label}
                 />
               );
             })}
@@ -37,6 +38,7 @@ const PageLayoutSection = ({
   icon,
   sectionPath,
   pagePath,
+  label,
 }: PageLayoutSectionProps) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -53,17 +55,17 @@ const PageLayoutSection = ({
     <div
       onClick={handleNavigate}
       className={cn(
-        'w-10 h-10 flex items-center justify-center rounded-md text-graphite-400 hover:text-primary-light bg-graphite-500 hover:bg-graphite-600 cursor-pointer',
+        'p-2 flex items-center justify-center rounded-md text-graphite-400 hover:text-secondary-neon bg-graphite-500 hover:bg-graphite-600 cursor-pointer',
         {
-          'text-primary-light': isActive,
+          'text-secondary-neon': isActive,
+          'gap-[0.5rem] p-2 text-xs lg:text-sm font-semibold': label,
         },
       )}
     >
       {icon}
+      {label ? label : null}
     </div>
   );
 };
 
-export const PageLayout = {
-  Root: PageLayoutRoot,
-};
+export default PageLayout;

@@ -8,7 +8,9 @@ const InputError = ({ errors, name }: InputErrorProps) => {
       name={name}
       message={errors[name]?.message}
       render={({ message }) => (
-        <p className="text-red-400 mr-auto text-xs mt-[5px]">{message}</p>
+        <p className="text-red-500 mr-auto text-xs font-semibold mt-[5px]">
+          {message}
+        </p>
       )}
     />
   );

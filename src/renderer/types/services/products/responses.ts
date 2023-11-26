@@ -3,7 +3,7 @@ import { DefaultResponse } from '../response';
 
 export type GetProductsResponse = Omit<DefaultResponse, 'data'> & {
   products: Product[];
-  count: number;
+  total?: number;
 };
 
 export type FindProductResponse = Omit<DefaultResponse, 'data'> & {

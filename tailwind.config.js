@@ -12,7 +12,7 @@ module.exports = {
         sky: colors.sky,
         cyan: colors.cyan,
         graphite: {
-          400: '#405068',
+          400: '#516d96',
           500: '#2e3242',
           600: '#232632',
         },

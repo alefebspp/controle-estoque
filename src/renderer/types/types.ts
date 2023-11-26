@@ -11,3 +11,18 @@ export interface Product {
   stock_quantity: number;
   created_at: Date;
 }
+
+export enum MovementType {
+  INFLOW = 'ENTRADA',
+  OUTFLOW = 'SAÍDA',
+}
+
+export interface Movement {
+  id: string;
+  product_id: string;
+  user_id: string;
+  quantity: number;
+  type: MovementType;
+  date: string;
+  product?: Product;
+}

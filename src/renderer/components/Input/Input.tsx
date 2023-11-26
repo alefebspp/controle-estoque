@@ -13,20 +13,22 @@ const Input = ({
   errors,
   className,
   children,
+  label,
   ...rest
 }: InputProps) => {
-  const placeholderDefault = 'Type here';
-
-  const receivedError = errors ? errors[name] : false;
+  const placeholderDefault = '';
 
   return (
     <div className={cn('flex flex-col items-center min-w-[300px]', className)}>
+      <label
+        htmlFor={name}
+        className="block mr-auto text-xs font-medium text-graphite-400 dark:text-white"
+      >
+        {label}
+      </label>
       <div
         className={cn(
-          'flex items-center border border-graphite-400 gap-1 bg-white w-full h-9 rounded focus-within:border-0 focus-within:ring-2 ring-blue-500',
-          {
-            'ring-2 ring-red-500 border-0 text-red-400': receivedError,
-          },
+          'flex items-center border border-graphite-400 gap-1 bg-white w-full h-10 rounded focus-within:border-0 focus-within:ring-2 ring-blue-500',
         )}
       >
         <input
@@ -38,11 +40,7 @@ const Input = ({
           value={value}
           {...rest}
           className={cn(
-            'bg-transparent flex-1 px-2 placeholder:text-gray-400 focus:placeholder:text-blue-500 text-gray-600 text-sm outline-none',
-            {
-              'placeholder:text-red-400 focus:placeholder:text-red-400':
-                receivedError,
-            },
+            'bg-transparent flex-1 px-2 placeholder:text-gray-400 focus:placeholder:text-blue-500 text-graphite-500 text-sm outline-none',
           )}
         />
         {children}

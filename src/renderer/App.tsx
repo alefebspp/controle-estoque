@@ -1,12 +1,6 @@
 import { MemoryRouter as Router } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import 'react-toastify/dist/ReactToastify.css';
 import 'tailwindcss/tailwind.css';

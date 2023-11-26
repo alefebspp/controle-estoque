@@ -1,8 +1,8 @@
 import { ListBulletIcon, PlusIcon } from '@radix-ui/react-icons';
 
-import { PageLayoutSection } from '../../types/components';
+import { PageLayoutSectionProps } from '../../styles/layout/interface';
 
-const productsNavSections: PageLayoutSection[] = [
+const productsNavSections: PageLayoutSectionProps[] = [
   {
     icon: <ListBulletIcon />,
     sectionPath: '',

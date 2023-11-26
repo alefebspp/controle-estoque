@@ -47,13 +47,15 @@ const Login = () => {
       <div className="w-[30%]">
         <form onSubmit={onSubmit} className="w-full h-full flex flex-col gap-4">
           <Input
-            placeholder="Email"
+            label="Email"
+            placeholder="Digite um email"
             register={register}
             name="email"
             errors={errors}
           />
           <Input
-            placeholder="Senha"
+            label="Senha"
+            placeholder="Digite sua senha"
             register={register}
             name="password"
             errors={errors}

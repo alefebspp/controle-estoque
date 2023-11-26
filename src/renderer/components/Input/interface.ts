@@ -18,4 +18,5 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   errors?: Record<string, any>;
   className?: string;
   children?: ReactNode;
+  label: string;
 }

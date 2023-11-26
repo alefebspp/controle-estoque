@@ -9,4 +9,5 @@ export interface PageLayoutSectionProps {
   sectionPath: string;
   pagePath: string;
   icon: ReactNode;
+  label?: string;
 }

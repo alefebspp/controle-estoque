@@ -4,11 +4,12 @@ import ProductsTable from '../../../components/Tables/ProductsTable';
 import useAuthContext from '../../../hooks/useAuth';
 import { useGetProducts } from '../../../hooks/useProducts';
 
-export const Main = () => {
+export const ProductsMain = () => {
   const { user } = useAuthContext();
 
   const { data, isLoading } = useGetProducts({
     userId: user?.id || '',
+    fetchProductsTotal: false,
   });
 
   if (isLoading) {
@@ -21,7 +22,7 @@ export const Main = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <h2 className="text-xl font-semibold text-graphite-400">
+      <h2 className="text-md lg:text-lg xl:text-xl font-semibold text-graphite-400">
         Lista de produtos
       </h2>
       <ProductsTable products={data?.products || []} />

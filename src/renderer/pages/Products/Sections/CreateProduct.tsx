@@ -55,23 +55,26 @@ export const CreateProduct = () => {
             register={register}
             errors={errors}
             name="description"
-            placeholder="Descrição"
+            placeholder="Digite uma descrição"
+            label="Descrição"
           />
           <Input
             register={register}
             errors={errors}
             name="sell_value"
-            placeholder="Valor de venda"
+            placeholder="Digite um valor"
             onChange={(e) => {
               setValue('sell_value', CURRENCYMask(e.target.value));
             }}
+            label="Valor de venda"
           />
           <Input
             register={register}
             errors={errors}
             name="stock_quantity"
-            placeholder="Qtd. estoque"
+            placeholder="Digite uma quantidade"
             type="number"
+            label="Qtd. estoque"
           />
           <Button
             className="w-full"

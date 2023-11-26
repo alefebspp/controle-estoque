@@ -9,6 +9,7 @@ import {
   CrossCircledIcon,
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
+  DownloadIcon,
   MagnifyingGlassIcon,
   Pencil2Icon,
 } from '@radix-ui/react-icons';
@@ -29,14 +30,22 @@ import { rankItem } from '@tanstack/match-sorter-utils';
 
 import DebouncedInput from '../Input/DebounceFilter';
 import ConfirmToast from '../ConfirmToast/ConfirmToast';
+import Button from '../Button/Button';
 
 import { Product } from '../../types/types';
+import { productsColumns, totalColumns } from './productsColumns';
 
-import { ProductsTableRootProps, ProductsTableHeaderProps } from './interface';
+import { ProductsTableProps, ProductsTableHeaderProps } from './interface';
 import { useDeleteProduct } from '../../hooks/useProducts';
 import { showLoadingToast, dismissLoadingToast } from '../../lib/show-toast';
+import { applyCurrency } from '../../lib/masks';
+import { generatePdf, generateExcel } from '../../lib/util';
 
-const ProductsTable = ({ products }: ProductsTableRootProps) => {
+const ProductsTable = ({
+  products,
+  showTotal = false,
+  total,
+}: ProductsTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
 
@@ -60,49 +69,29 @@ const ProductsTable = ({ products }: ProductsTableRootProps) => {
 
   const columnHelper = createColumnHelper<Product>();
 
-  const columns = [
-    columnHelper.accessor('description', {
-      cell: (info) => info.getValue(),
-      footer: (info) => info.column.id,
-      header: () => 'Descrição',
-    }),
-    columnHelper.accessor('sell_value', {
-      id: 'sellValue',
-      cell: (info) => (
-        <i>
-          {info.getValue().toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-          })}
-        </i>
-      ),
-      header: () => 'Valor de venda',
-      footer: (info) => info.column.id,
-    }),
-    columnHelper.accessor('stock_quantity', {
-      header: () => 'Qtd. Estoque',
-      cell: (info) => info.renderValue(),
-      footer: (info) => info.column.id,
-    }),
-    columnHelper.accessor('id', {
-      header: () => 'Ações',
-      cell: (info) => (
-        <div className="w-full h-full flex justify-start items-center gap-[15px]">
-          <ConfirmToast
-            confirmFn={async () => await mutateAsync(info.getValue())}
-          >
-            <CrossCircledIcon className="w-4 h-4 text-red-500 cursor-pointer" />
-          </ConfirmToast>
-          <Pencil2Icon
-            onClick={() => navigate(info.getValue())}
-            className="w-4 h-4 text-secondary-light cursor-pointer"
-          />
-        </div>
-      ),
-      footer: (info) => info.column.id,
-      enableSorting: false,
-    }),
-  ];
+  const columns = showTotal
+    ? totalColumns
+    : [
+        ...productsColumns,
+        columnHelper.accessor('id', {
+          header: () => 'Ações',
+          cell: (info) => (
+            <div className="w-full h-full flex justify-start items-center gap-[1rem]">
+              <ConfirmToast
+                confirmFn={async () => await mutateAsync(info.getValue())}
+              >
+                <CrossCircledIcon className="w-4 h-4 text-red-500 cursor-pointer" />
+              </ConfirmToast>
+              <Pencil2Icon
+                onClick={() => navigate(info.getValue())}
+                className="w-4 h-4 text-secondary-light cursor-pointer"
+              />
+            </div>
+          ),
+          footer: (info) => info.column.id,
+          enableSorting: false,
+        }),
+      ];
 
   const table = useReactTable({
     data: products,
@@ -132,14 +121,17 @@ const ProductsTable = ({ products }: ProductsTableRootProps) => {
   }, [isPending]);
 
   return (
-    <div className="w-full h-full flex flex-col justify-between">
+    <div className="w-full h-full flex flex-col">
       <ProductsTableHeader
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
+        total={total}
+        downloadData={showTotal}
+        products={products}
       />
-      <div className="h-[100%] overflow-y-auto">
+      <div className=" md:max-h-[300px] lg:max-h-[400px] xl:max-h-[600px] overflow-y-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="text-xs sticky top-0 text-graphite-500 uppercase bg-gray-200">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -170,10 +162,7 @@ const ProductsTable = ({ products }: ProductsTableRootProps) => {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr
-                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                key={row.id}
-              >
+              <tr className="bg-white border-b border-gray-200" key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <td
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -187,8 +176,8 @@ const ProductsTable = ({ products }: ProductsTableRootProps) => {
             ))}
           </tbody>
         </table>
-        {userHasProducts && <ProductsTablePagination table={table} />}
       </div>
+      {userHasProducts && <ProductsTablePagination table={table} />}
     </div>
   );
 };
@@ -196,7 +185,24 @@ const ProductsTable = ({ products }: ProductsTableRootProps) => {
 const ProductsTableHeader = ({
   globalFilter,
   setGlobalFilter,
+  total,
+  downloadData,
+  products,
 }: ProductsTableHeaderProps) => {
+  const tableTitle = `Total: ${applyCurrency(total as number)}`;
+  const tableHeaders = [['Descrição', 'Qtd. estoque', 'Total']];
+  const fileName = 'relatorio_geral';
+
+  const tableData = products?.map((product) => {
+    const productValue = product.sell_value;
+    const productQuantity = product.stock_quantity;
+    return [
+      product.description,
+      productQuantity,
+      applyCurrency(productValue * productQuantity),
+    ];
+  });
+
   return (
     <div className="w-full py-[15px] flex justify-start items-start gap-[30px]">
       <div className="flex flex-col">
@@ -213,6 +219,53 @@ const ProductsTableHeader = ({
           <MagnifyingGlassIcon className="mr-2" />
         </DebouncedInput>
       </div>
+      {downloadData && (
+        <>
+          <div className="flex flex-col justify-between h-full">
+            <label className="text-sm font-semibold text-graphite-400">
+              PDF
+            </label>
+            <Button
+              onClick={() =>
+                generatePdf({ tableData, tableHeaders, tableTitle, fileName })
+              }
+              size="sm"
+              variant="outline"
+            >
+              <DownloadIcon className="mr-2" /> Baixar
+            </Button>
+          </div>
+          <div className="flex flex-col justify-between h-full">
+            <label className="text-sm font-semibold text-graphite-400">
+              Excel
+            </label>
+            <Button
+              onClick={() =>
+                generateExcel({
+                  tableBody: tableData,
+                  tableHeader: tableHeaders[0],
+                  sheet: fileName,
+                  fileName,
+                })
+              }
+              size="sm"
+              variant="outline"
+            >
+              <DownloadIcon className="mr-2" /> Baixar
+            </Button>
+          </div>
+        </>
+      )}
+      {total ? (
+        <div className="flex flex-col h-full">
+          <label className="text-sm font-semibold text-graphite-400">
+            Total em produtos
+          </label>
+          <h3 className="text-xl font-semibold m-auto">
+            {applyCurrency(total)}
+          </h3>
+        </div>
+      ) : null}
     </div>
   );
 };

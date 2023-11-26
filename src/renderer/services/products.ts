@@ -110,6 +110,7 @@ export const deleteProduct = async (
 
 export const getProducts = async ({
   userId,
+  fetchProductsTotal,
 }: GetProductsParams): Promise<GetProductsResponse> => {
   const productsRef = collection(db, 'products');
 
@@ -119,15 +120,33 @@ export const getProducts = async ({
 
   const products: Product[] = [];
 
-  docSnap.forEach((doc) => products.push(doc.data() as Product));
+  if (fetchProductsTotal) {
+    let total: number = 0;
+    docSnap.forEach((doc) => {
+      const product = doc.data() as Product;
+      const productTotal: number = product.sell_value * product.stock_quantity;
+      total += productTotal;
 
-  const count = await getCountFromServer(q);
+      products.push(product);
+    });
+
+    return {
+      success: true,
+      message: '',
+      products,
+      total,
+    };
+  }
+
+  docSnap.forEach((doc) => {
+    const product = doc.data() as Product;
+    products.push(product);
+  });
 
   return {
     success: true,
     message: '',
     products,
-    count: count.data().count,
   };
 };
 

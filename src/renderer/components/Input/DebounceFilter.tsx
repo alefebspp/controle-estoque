@@ -25,6 +25,7 @@ function DebouncedInput({
 
   return (
     <Input
+      label=""
       {...props}
       name="debounce_input"
       value={value}

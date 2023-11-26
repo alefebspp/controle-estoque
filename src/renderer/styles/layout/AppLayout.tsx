@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { HomeIcon, ArchiveIcon } from '@radix-ui/react-icons';
+import { HomeIcon, ArchiveIcon, BarChartIcon } from '@radix-ui/react-icons';
 import { AppBar } from '../../components/AppBar/AppBar';
 
 const AppLayout = ({ children }: PropsWithChildren) => {
@@ -11,6 +11,9 @@ const AppLayout = ({ children }: PropsWithChildren) => {
         </AppBar.Item>
         <AppBar.Item path="/products">
           <ArchiveIcon className="w-6 h-6" />
+        </AppBar.Item>
+        <AppBar.Item path="/movement">
+          <BarChartIcon className="w-6 h-6" />
         </AppBar.Item>
       </AppBar.Root>
       <div className="w-full h-full">{children}</div>

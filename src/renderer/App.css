@@ -21,3 +21,33 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+/* .react-datepicker-wrapper,
+.react-datepicker__input-container,
+.react-datepicker__input-container input {
+display: block;
+width: 100%;
+} */
+
+.react-datepicker-wrapper{
+  margin-right: 2rem;
+}
+
+.react-datepicker__input-container input {
+  margin: 0;
+  width: 100px;
+  height: 40px;
+  border: 1px solid #516d96;
+  border-radius: 5px;
+  padding: 0 5px;
+  outline: none;
+}
+
+.react-datepicker__tab-loop {
+  margin: 0;
+  padding: 0;
+  width: 0;
+  height: 0;
+  z-index: 99;
+  overflow: hidden;
+}
