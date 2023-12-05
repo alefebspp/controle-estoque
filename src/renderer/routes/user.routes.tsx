@@ -7,6 +7,7 @@ import {
   CreateProduct,
   ProductsMain,
   UpdateProduct,
+  ProductsReport,
 } from '../pages/Products/Sections/';
 
 import Movement from '../pages/Movement/Movement';
@@ -19,6 +20,7 @@ const UserRoutes = () => {
       <Route path="/products" element={<Products />}>
         <Route path="" element={<ProductsMain />} />
         <Route path="create" element={<CreateProduct />} />
+        <Route path="report" element={<ProductsReport />} />
         <Route path=":productId" element={<UpdateProduct />} />
       </Route>
       <Route path="/movement" element={<Movement />}>

@@ -33,7 +33,7 @@ import ConfirmToast from '../ConfirmToast/ConfirmToast';
 import Button from '../Button/Button';
 
 import { Product } from '../../types/types';
-import { productsColumns, totalColumns } from './productsColumns';
+import { productsColumns } from './productsColumns';
 
 import { ProductsTableProps, ProductsTableHeaderProps } from './interface';
 import { useDeleteProduct } from '../../hooks/useProducts';
@@ -41,13 +41,10 @@ import { showLoadingToast, dismissLoadingToast } from '../../lib/show-toast';
 import { applyCurrency } from '../../lib/masks';
 import { generatePdf, generateExcel } from '../../lib/util';
 
-const ProductsTable = ({
-  products,
-  showTotal = false,
-  total,
-}: ProductsTableProps) => {
+const ProductsTable = ({ products, showTotal = false }: ProductsTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
+  const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
 
   const navigate = useNavigate();
   const userHasProducts = products.length > 0;
@@ -70,7 +67,72 @@ const ProductsTable = ({
   const columnHelper = createColumnHelper<Product>();
 
   const columns = showTotal
-    ? totalColumns
+    ? [
+        columnHelper.accessor((row) => row, {
+          id: 'product',
+          cell: (info) => (
+            <input
+              checked={
+                selectedProducts.find(
+                  (product) => info.getValue().id === product.id,
+                )
+                  ? true
+                  : false
+              }
+              onChange={(event) => {
+                if (event.target.checked) {
+                  setSelectedProducts((prev) => [info.getValue(), ...prev]);
+                } else {
+                  setSelectedProducts(
+                    selectedProducts.filter(
+                      (product) => info.getValue().id !== product.id,
+                    ),
+                  );
+                }
+              }}
+              type="checkbox"
+            />
+          ),
+          footer: (info) => info.column.id,
+          header: (info) => {
+            const filteredValues = info.table
+              .getFilteredRowModel()
+              .rows.map((row) => row.original);
+            return (
+              <input
+                type="checkbox"
+                checked={selectedProducts.length === filteredValues.length}
+                onChange={(event) => {
+                  if (event.target.checked) {
+                    setSelectedProducts(filteredValues);
+                  } else {
+                    setSelectedProducts([]);
+                  }
+                }}
+              />
+            );
+          },
+          enableSorting: false,
+        }),
+        ...productsColumns,
+        columnHelper.accessor((row) => row.stock_quantity * row.sell_value, {
+          id: 'total',
+          header: () => 'Total',
+          cell: (info) => {
+            return info.getValue().toLocaleString('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            });
+          },
+          footer: (info) => info.column.id,
+          sortingFn: (rowA, rowB, columnId) => {
+            const numA = rowA.renderValue(columnId) as number;
+            const numB = rowB.getValue(columnId) as number;
+
+            return numA < numB ? 1 : numA > numB ? -1 : 0;
+          },
+        }),
+      ]
     : [
         ...productsColumns,
         columnHelper.accessor('id', {
@@ -125,9 +187,8 @@ const ProductsTable = ({
       <ProductsTableHeader
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
-        total={total}
         downloadData={showTotal}
-        products={products}
+        products={selectedProducts}
       />
       <div className=" md:max-h-[300px] lg:max-h-[400px] xl:max-h-[600px] overflow-y-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -185,23 +246,26 @@ const ProductsTable = ({
 const ProductsTableHeader = ({
   globalFilter,
   setGlobalFilter,
-  total,
   downloadData,
   products,
 }: ProductsTableHeaderProps) => {
+  const showExtraInfos = products.length > 0;
+
+  let total: number = 0;
+
+  const tableData = products?.map((product) => {
+    const productTotal = product.sell_value * product.stock_quantity;
+    total += productTotal;
+    return [
+      product.description,
+      product.stock_quantity,
+      applyCurrency(productTotal),
+    ];
+  });
+
   const tableTitle = `Total: ${applyCurrency(total as number)}`;
   const tableHeaders = [['Descrição', 'Qtd. estoque', 'Total']];
   const fileName = 'relatorio_geral';
-
-  const tableData = products?.map((product) => {
-    const productValue = product.sell_value;
-    const productQuantity = product.stock_quantity;
-    return [
-      product.description,
-      productQuantity,
-      applyCurrency(productValue * productQuantity),
-    ];
-  });
 
   return (
     <div className="w-full py-[15px] flex justify-start items-start gap-[30px]">
@@ -219,7 +283,7 @@ const ProductsTableHeader = ({
           <MagnifyingGlassIcon className="mr-2" />
         </DebouncedInput>
       </div>
-      {downloadData && (
+      {downloadData && showExtraInfos ? (
         <>
           <div className="flex flex-col justify-between h-full">
             <label className="text-sm font-semibold text-graphite-400">
@@ -255,8 +319,8 @@ const ProductsTableHeader = ({
             </Button>
           </div>
         </>
-      )}
-      {total ? (
+      ) : null}
+      {total && showExtraInfos ? (
         <div className="flex flex-col h-full">
           <label className="text-sm font-semibold text-graphite-400">
             Total em produtos

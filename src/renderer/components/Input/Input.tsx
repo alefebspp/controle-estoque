@@ -28,7 +28,7 @@ const Input = ({
       </label>
       <div
         className={cn(
-          'flex items-center border border-graphite-400 gap-1 bg-white w-full h-10 rounded focus-within:border-0 focus-within:ring-2 ring-blue-500',
+          'flex items-center border border-graphite-400 gap-1 bg-white w-full rounded focus-within:border-0 focus-within:ring-2 ring-blue-500',
         )}
       >
         <input
@@ -40,7 +40,7 @@ const Input = ({
           value={value}
           {...rest}
           className={cn(
-            'bg-transparent flex-1 px-2 placeholder:text-gray-400 focus:placeholder:text-blue-500 text-graphite-500 text-sm outline-none',
+            'bg-transparent flex-1 px-2 py-[0.5rem] placeholder:text-gray-400 focus:placeholder:text-blue-500 text-graphite-500 text-xs xl:text-sm placeholder:text-xs xl:placeholder:text-sm outline-none',
           )}
         />
         {children}

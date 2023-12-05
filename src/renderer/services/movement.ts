@@ -1,7 +1,9 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDocs,
+  limit,
   query,
   setDoc,
   where,
@@ -25,6 +27,7 @@ export const getMovements = async ({
   user_id,
   from,
   to,
+  stablishmentId,
 }: GetMovementsRequest): Promise<GetMovementsResponse> => {
   const movementsRef = collection(db, 'movement');
 
@@ -42,6 +45,7 @@ export const getMovements = async ({
   let q = query(
     movementsRef,
     where('user_id', '==', user_id),
+    where('stablishment_id', '==', stablishmentId),
     where('created_at', '>=', fromDate),
     where('created_at', '<=', toDate),
   );
@@ -52,7 +56,7 @@ export const getMovements = async ({
 
   const response = await getProducts({
     userId: user_id,
-    fetchProductsTotal: false,
+    stablishmentId,
   });
 
   const userProducts = response.products;
@@ -129,5 +133,56 @@ export const createMovement = async (
   return {
     success: true,
     message: 'Movimento criado com sucesso!',
+  };
+};
+
+export const deleteMovement = async (
+  movementId: string,
+): Promise<DefaultResponse> => {
+  const movementRef = collection(db, 'movement');
+
+  let q = query(movementRef, where('id', '==', movementId), limit(1));
+
+  const docSnap = await getDocs(q);
+
+  if (docSnap.empty) {
+    return {
+      success: false,
+      message: 'Movimento não existe',
+    };
+  }
+
+  const docId = docSnap.docs[0].id;
+  const movement = docSnap.docs[0].data() as Movement;
+
+  const movementDocRef = doc(db, 'movement', docId);
+
+  const { product, success, message } = await findProduct(movement.product_id);
+
+  if (!success) {
+    return {
+      success: false,
+      message,
+    };
+  }
+
+  if (product && success) {
+    await deleteDoc(movementDocRef).then(async () => {
+      await updateProduct({
+        productId: movement.product_id,
+        data: {
+          ...product,
+          stock_quantity:
+            movement.type == 'ENTRADA'
+              ? product.stock_quantity - movement.quantity
+              : product.stock_quantity + movement.quantity,
+        },
+      });
+    });
+  }
+
+  return {
+    success: true,
+    message: 'Movimento deletado',
   };
 };

@@ -26,3 +26,10 @@ export interface Movement {
   date: string;
   product?: Product;
 }
+
+export interface Stablishment {
+  id: string;
+  user_id: string;
+  name: string;
+  productsTotal?: number;
+}

@@ -29,7 +29,7 @@ const PageLayout = ({ children, title, sections }: PageLayoutProps) => {
           </div>
         )}
       </header>
-      <div className="w-full h-full px-[15px] pb-[15px]">{children}</div>
+      <main className="w-full h-full px-[15px] pb-[15px]">{children}</main>
     </div>
   );
 };
@@ -58,7 +58,7 @@ const PageLayoutSection = ({
         'p-2 flex items-center justify-center rounded-md text-graphite-400 hover:text-secondary-neon bg-graphite-500 hover:bg-graphite-600 cursor-pointer',
         {
           'text-secondary-neon': isActive,
-          'gap-[0.5rem] p-2 text-xs lg:text-sm font-semibold': label,
+          'gap-[0.5rem] p-2 text-xs xl:text-sm font-semibold': label,
         },
       )}
     >

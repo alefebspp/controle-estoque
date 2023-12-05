@@ -10,7 +10,7 @@ import { useGetMovements } from '../../../hooks/useMovement';
 import { formatDateToString } from '../../../lib/filter';
 
 export const MovementMain = () => {
-  const { user } = useAuthContext();
+  const { user, stablishment } = useAuthContext();
   const [searchParams, setSearchParams] = useSearchParams({
     from: formatDateToString(new Date()),
     to: formatDateToString(new Date()),
@@ -33,6 +33,7 @@ export const MovementMain = () => {
     user?.id || '',
     savedFrom ?? from,
     savedTo ?? to,
+    stablishment?.id || '',
   );
 
   if (isLoading) {
@@ -46,7 +47,7 @@ export const MovementMain = () => {
   return (
     <div className="w-full h-full flex flex-col">
       <h2 className="text-md lg:text-lg xl:text-xl font-semibold text-graphite-400">
-        Lista de movimentos
+        {`Lista de movimentos ${stablishment ? `| ${stablishment.name}` : ''}`}
       </h2>
       <MovementsTable
         extraFilters={<DateRange setDates={setSearchParams} form={form} />}

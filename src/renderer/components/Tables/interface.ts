@@ -12,11 +12,16 @@ export interface MovementsTableProps {
   extraFilters?: React.ReactNode;
 }
 
+export interface MovementsTableHeaderProps {
+  globalFilter: string;
+  setGlobalFilter: Dispatch<SetStateAction<string>>;
+  extraFilters?: React.ReactNode;
+}
+
 export interface ProductsTableHeaderProps {
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
-  total?: number;
   downloadData?: boolean;
   extraFilters?: React.ReactNode;
-  products?: Product[];
+  products: Product[];
 }

@@ -19,7 +19,7 @@ const keys = {
 export function useGetProducts(params: GetProductsParams) {
   return useQuery({
     queryFn: async () => await getProducts(params),
-    queryKey: [...keys.getProducts],
+    queryKey: [...keys.getProducts, params.stablishmentId],
   });
 }
 

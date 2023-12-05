@@ -49,7 +49,7 @@ export const UpdateProduct = () => {
 
       const sellValue = applyCurrency(product.sell_value);
 
-      setValue('sell_value', sellValue);
+      setValue('sell_value', sellValue as string);
     }
   }, [product, reset]);
 

@@ -4,11 +4,12 @@ export interface CreateProductRequest {
   stock_quantity: number;
   created_at: Date;
   userId: string;
+  stablishment_id: string;
 }
 
 export interface GetProductsParams {
   userId: string;
-  fetchProductsTotal: boolean;
+  stablishmentId: string;
 }
 
 export interface UpdateProductParams {
