@@ -50,7 +50,7 @@ const Button = ({
       disabled={isLoading}
       {...props}
     >
-      {isLoading ? <Spinner /> : children}
+      {isLoading ? <Spinner size="sm" /> : children}
     </button>
   );
 };

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import {
   ArrowDownIcon,
@@ -10,7 +9,6 @@ import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
   MagnifyingGlassIcon,
-  Pencil2Icon,
 } from '@radix-ui/react-icons';
 
 import {
@@ -32,19 +30,18 @@ import ConfirmToast from '../ConfirmToast/ConfirmToast';
 
 import { Movement } from '../../types/types';
 
-import { ProductsTableHeaderProps, MovementsTableProps } from './interface';
-import { useDeleteProduct } from '../../hooks/useProducts';
+import { MovementsTableProps, MovementsTableHeaderProps } from './interface';
 import { showLoadingToast, dismissLoadingToast } from '../../lib/show-toast';
 import { cn } from '../../lib/util';
+import { useDeleteMovement } from '../../hooks/useMovement';
 
 const MovementsTable = ({ movements, extraFilters }: MovementsTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
 
-  const navigate = useNavigate();
   const userHasProducts = movements.length > 0;
 
-  const { mutateAsync, isPending } = useDeleteProduct();
+  const { mutateAsync, isPending } = useDeleteMovement();
 
   const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
     // Rank the item
@@ -92,24 +89,20 @@ const MovementsTable = ({ movements, extraFilters }: MovementsTableProps) => {
       cell: (info) => info.renderValue(),
       footer: (info) => info.column.id,
     }),
-    // columnHelper.accessor('id', {
-    //   header: () => 'Ações',
-    //   cell: (info) => (
-    //     <div className="w-full h-full flex justify-start items-center gap-[1rem]">
-    //       <ConfirmToast
-    //         confirmFn={async () => await mutateAsync(info.getValue())}
-    //       >
-    //         <CrossCircledIcon className="w-4 h-4 text-red-500 cursor-pointer" />
-    //       </ConfirmToast>
-    //       <Pencil2Icon
-    //         onClick={() => navigate(info.getValue())}
-    //         className="w-4 h-4 text-secondary-light cursor-pointer"
-    //       />
-    //     </div>
-    //   ),
-    //   footer: (info) => info.column.id,
-    //   enableSorting: false,
-    // }),
+    columnHelper.accessor('id', {
+      header: () => 'Ações',
+      cell: (info) => (
+        <div className="w-full h-full flex justify-start items-center gap-[1rem]">
+          <ConfirmToast
+            confirmFn={async () => await mutateAsync(info.getValue())}
+          >
+            <CrossCircledIcon className="w-4 h-4 text-red-500 cursor-pointer" />
+          </ConfirmToast>
+        </div>
+      ),
+      footer: (info) => info.column.id,
+      enableSorting: false,
+    }),
   ];
 
   const table = useReactTable({
@@ -203,7 +196,7 @@ const ProductsTableHeader = ({
   globalFilter,
   setGlobalFilter,
   extraFilters,
-}: ProductsTableHeaderProps) => {
+}: MovementsTableHeaderProps) => {
   return (
     <div className="w-full py-[15px] flex justify-start items-start gap-[30px]">
       <div className="flex flex-col">

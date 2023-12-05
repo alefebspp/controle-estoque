@@ -110,33 +110,19 @@ export const deleteProduct = async (
 
 export const getProducts = async ({
   userId,
-  fetchProductsTotal,
+  stablishmentId,
 }: GetProductsParams): Promise<GetProductsResponse> => {
   const productsRef = collection(db, 'products');
 
-  let q = query(productsRef, where('user_id', '==', userId));
+  let q = query(
+    productsRef,
+    where('user_id', '==', userId),
+    where('stablishment_id', '==', stablishmentId),
+  );
 
   const docSnap = await getDocs(q);
 
   const products: Product[] = [];
-
-  if (fetchProductsTotal) {
-    let total: number = 0;
-    docSnap.forEach((doc) => {
-      const product = doc.data() as Product;
-      const productTotal: number = product.sell_value * product.stock_quantity;
-      total += productTotal;
-
-      products.push(product);
-    });
-
-    return {
-      success: true,
-      message: '',
-      products,
-      total,
-    };
-  }
 
   docSnap.forEach((doc) => {
     const product = doc.data() as Product;
@@ -157,6 +143,13 @@ export const createProduct = async ({
   const productsRef = collection(db, 'products');
 
   const { created_at, ...data } = params;
+
+  if (!data.stablishment_id) {
+    return {
+      success: false,
+      message: 'Selecione um estabelecimento',
+    };
+  }
 
   const formatedProduct = {
     ...data,

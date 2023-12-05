@@ -14,10 +14,11 @@ import { useCreateMovement } from '../../../hooks/useMovement';
 import { MovementType } from '../../../types/types';
 
 export const CreateMovement = () => {
-  const { user } = useAuthContext();
+  const { user, stablishment } = useAuthContext();
 
   const { data, isLoading } = useGetProducts({
     userId: user?.id || '',
+    stablishmentId: stablishment?.id || '',
   });
 
   const { mutateAsync } = useCreateMovement();
@@ -32,17 +33,17 @@ export const CreateMovement = () => {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
-    setValue,
     reset,
   } = useForm({
     resolver: yupResolver(createMovementSchema),
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    if (user) {
+    if (user && stablishment) {
       const response = await mutateAsync({
         ...data,
         user_id: user.id,
+        stablishment_id: stablishment.id,
       });
 
       if (response.success) {
@@ -61,8 +62,8 @@ export const CreateMovement = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <h2 className="text-xl font-semibold text-graphite-400">
-        Novo Movimento
+      <h2 className="text-md lg:text-lg xl:text-xl font-semibold text-graphite-400">
+        {`Novo Movimento ${stablishment ? `| ${stablishment.name}` : ''}`}
       </h2>
       <div className="w-full h-full flex justify-center items-center">
         <form
@@ -74,6 +75,7 @@ export const CreateMovement = () => {
             label="Produto"
             placeholder="Selecione um produto"
             register={register}
+            errors={errors}
             options={productsOptions}
           />
           <Select
@@ -81,6 +83,7 @@ export const CreateMovement = () => {
             label="Tipo"
             placeholder="Selecione o tipo de movimento"
             register={register}
+            errors={errors}
             options={[
               {
                 label: 'Entrada',
@@ -105,7 +108,6 @@ export const CreateMovement = () => {
             errors={errors}
             name="date"
             type="date"
-            //defaultValue={new Date().toISOString().split('T')[0]}
             label="Data do movimento"
           />
           <Button

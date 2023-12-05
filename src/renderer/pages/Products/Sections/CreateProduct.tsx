@@ -12,7 +12,7 @@ import useAuthContext from '../../../hooks/useAuth';
 import { useCreateProduct } from '../../../hooks/useProducts';
 
 export const CreateProduct = () => {
-  const { user } = useAuthContext();
+  const { user, stablishment } = useAuthContext();
 
   const { mutateAsync } = useCreateProduct();
 
@@ -35,6 +35,7 @@ export const CreateProduct = () => {
         sell_value: replaceCurrencyMask(sell_value),
         created_at: new Date(),
         userId: user.id,
+        stablishment_id: stablishment?.id || '',
       });
 
       if (response.success) {
@@ -45,7 +46,9 @@ export const CreateProduct = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <h2 className="text-xl font-semibold text-graphite-400">Novo Produto</h2>
+      <h2 className="text-md lg:text-lg xl:text-xl font-semibold text-graphite-400">
+        {`Novo Produto ${stablishment ? `| ${stablishment.name}` : ''}`}
+      </h2>
       <div className="w-full h-full flex justify-center items-center">
         <form
           onSubmit={onSubmit}

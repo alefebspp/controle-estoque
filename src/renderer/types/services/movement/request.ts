@@ -4,10 +4,12 @@ export interface CreateMovementRequest {
   quantity: number;
   type: string;
   date: string;
+  stablishment_id: string;
 }
 
 export interface GetMovementsRequest {
   user_id: string;
   from: string;
   to: string;
+  stablishmentId: string;
 }

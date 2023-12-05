@@ -12,4 +12,5 @@ export interface SelectProps {
   className?: string;
   defaultValue?: number | string;
   onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
+  errors?: Record<string, any>;
 }

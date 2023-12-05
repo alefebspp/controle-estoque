@@ -1,6 +1,8 @@
 import { SelectProps } from './interface';
 import { cn } from '../../lib/util';
 
+import InputError from '../InputError/InputError';
+
 const Select = ({
   label,
   options,
@@ -10,6 +12,7 @@ const Select = ({
   className,
   defaultValue,
   onChange,
+  errors,
 }: SelectProps) => {
   return (
     <div className={cn('flex flex-col min-w-[300px]', className)}>
@@ -24,7 +27,7 @@ const Select = ({
         defaultValue={defaultValue ?? ''}
         placeholder={placeholder}
         {...register?.(name)}
-        className="border border-graphite-400 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block h-10 w-full px-2 placeholder:text-gray-400 outline-none"
+        className="border border-graphite-400 rounded focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-[0.5rem] placeholder:text-gray-400 placeholder:text-xs text-xs xl:placeholder:text-sm xl:text-sm outline-none"
         onChange={onChange}
       >
         <option value="" disabled hidden>
@@ -42,6 +45,7 @@ const Select = ({
           );
         })}
       </select>
+      {errors && <InputError errors={errors} name={name} />}
     </div>
   );
 };
