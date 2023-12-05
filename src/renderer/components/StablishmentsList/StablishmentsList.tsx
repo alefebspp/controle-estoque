@@ -14,7 +14,7 @@ function StablishmentsList() {
 
   let listData: React.ReactNode = (
     <>
-      <div className="w-full flex gap-[2rem]">
+      <div className="w-full flex gap-[2rem] py-[0.5rem] px-[1rem]">
         <StablishmentLegend />
         <CreateStablishment />
       </div>
@@ -40,13 +40,11 @@ function StablishmentsList() {
   }
 
   return (
-    <section className="w-full h-full p-[1rem]">
+    <section className="w-full h-full">
       <div className="w-full h-full flex flex-col gap-[1rem]">
-        <div className=" w-fit h-fit border-b-4 border-secondary-neon">
-          <h3 className="text-md lg:text-lg xl:text-xl font-medium text-black">
-            Estabelecimentos
-          </h3>
-        </div>
+        <h2 className="text-md lg:text-lg xl:text-xl font-semibold text-graphite-400">
+          Estabelecimentos
+        </h2>
         {listData}
       </div>
     </section>
