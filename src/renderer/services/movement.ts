@@ -1,5 +1,4 @@
 import {
-  collection,
   deleteDoc,
   doc,
   getDocs,
@@ -10,6 +9,7 @@ import {
 } from 'firebase/firestore';
 
 import { db } from '../config/db/firebase';
+import { movementsRef } from '../config/db/collections';
 import { generateUUID } from '../lib/helpers/generate-uuid';
 import { formatDate } from '../lib/util';
 
@@ -29,8 +29,6 @@ export const getMovements = async ({
   to,
   stablishmentId,
 }: GetMovementsRequest): Promise<GetMovementsResponse> => {
-  const movementsRef = collection(db, 'movement');
-
   const currentDate = new Date();
 
   const lastDayOfMonth = new Date(
@@ -80,8 +78,6 @@ export const getMovements = async ({
 export const createMovement = async (
   data: CreateMovementRequest,
 ): Promise<DefaultResponse> => {
-  const movementRef = collection(db, 'movement');
-
   const findProductResponse = await findProduct(data.product_id);
 
   if (!findProductResponse.product) {
@@ -128,7 +124,7 @@ export const createMovement = async (
     created_at: new Date(data.date),
   };
 
-  await setDoc(doc(movementRef), formatedMovement);
+  await setDoc(doc(movementsRef), formatedMovement);
 
   return {
     success: true,
@@ -139,9 +135,7 @@ export const createMovement = async (
 export const deleteMovement = async (
   movementId: string,
 ): Promise<DefaultResponse> => {
-  const movementRef = collection(db, 'movement');
-
-  let q = query(movementRef, where('id', '==', movementId), limit(1));
+  let q = query(movementsRef, where('id', '==', movementId), limit(1));
 
   const docSnap = await getDocs(q);
 

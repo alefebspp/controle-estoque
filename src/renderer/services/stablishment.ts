@@ -1,6 +1,5 @@
 import {
   Timestamp,
-  collection,
   doc,
   getDocs,
   query,
@@ -13,7 +12,7 @@ import {
   GetStablishmentsResponse,
 } from '../types/services/stablishment/responses';
 
-import { db } from '../config/db/firebase';
+import { stablishmentsRef, productsRef } from '../config/db/collections';
 
 import { Product, Stablishment } from '../types/types';
 import { DefaultResponse } from '../types/services/response';
@@ -23,9 +22,6 @@ import { CreateStablishmentRequest } from '../types/services/stablishment/reques
 export const getStablishments = async (
   user_id: string,
 ): Promise<GetStablishmentsResponse> => {
-  const stablishmentsRef = collection(db, 'stablishments');
-  const productsRef = collection(db, 'products');
-
   let q = query(stablishmentsRef, where('user_id', '==', user_id));
 
   const docSnap = await getDocs(q);
@@ -62,9 +58,7 @@ export const getStablishments = async (
 export const getStablishment = async (
   stablishment_id: string,
 ): Promise<GetStablishmentResponse> => {
-  const productsRef = collection(db, 'stablishments');
-
-  let q = query(productsRef, where('id', '==', stablishment_id));
+  let q = query(stablishmentsRef, where('id', '==', stablishment_id));
 
   const docSnap = await getDocs(q);
 
@@ -88,8 +82,6 @@ export const createStablishment = async ({
   userId,
   name,
 }: CreateStablishmentRequest): Promise<DefaultResponse> => {
-  const stablishmentRef = collection(db, 'stablishments');
-
   const formatedStablishment = {
     created_at: Timestamp.fromDate(new Date()),
     id: generateUUID(),
@@ -97,7 +89,7 @@ export const createStablishment = async ({
     name,
   };
 
-  await setDoc(doc(stablishmentRef), formatedStablishment);
+  await setDoc(doc(stablishmentsRef), formatedStablishment);
 
   return {
     success: true,
