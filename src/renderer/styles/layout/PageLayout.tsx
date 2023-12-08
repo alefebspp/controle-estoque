@@ -7,19 +7,18 @@ import { cn } from '../../lib/util';
 const PageLayout = ({ children, title, sections }: PageLayoutProps) => {
   return (
     <div className="w-full h-full flex flex-col">
-      <header className="flex items-center justify-start w-full h-[80px] px-[15px] gap-[15px]">
+      <header className="flex items-end justify-start w-full py-[1rem] px-[15px] gap-[2rem]">
         <div className=" w-fit h-fit border-b-4 border-secondary-neon">
           <h1 className="font-medium text-black">
             {title.toLocaleUpperCase()}
           </h1>
         </div>
         {sections && (
-          <div className="h-full flex items-center gap-[15px]">
+          <div className="flex items-center gap-[1rem]">
             {sections.map((section, index) => {
               return (
                 <PageLayoutSection
                   key={index}
-                  icon={section.icon}
                   sectionPath={section.sectionPath}
                   pagePath={section.pagePath}
                   label={section.label}
@@ -35,7 +34,6 @@ const PageLayout = ({ children, title, sections }: PageLayoutProps) => {
 };
 
 const PageLayoutSection = ({
-  icon,
   sectionPath,
   pagePath,
   label,
@@ -55,15 +53,13 @@ const PageLayoutSection = ({
     <div
       onClick={handleNavigate}
       className={cn(
-        'p-2 flex items-center justify-center rounded-md text-graphite-400 hover:text-secondary-neon bg-graphite-500 hover:bg-graphite-600 cursor-pointer',
+        'flex items-center justify-center text-xs xl:text-sm font-semibold text-graphite-400 hover:text-secondary-neon cursor-pointer',
         {
           'text-secondary-neon': isActive,
-          'gap-[0.5rem] p-2 text-xs xl:text-sm font-semibold': label,
         },
       )}
     >
-      {icon}
-      {label ? label : null}
+      {label}
     </div>
   );
 };

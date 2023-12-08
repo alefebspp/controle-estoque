@@ -8,6 +8,5 @@ export interface PageLayoutProps extends PropsWithChildren {
 export interface PageLayoutSectionProps {
   sectionPath: string;
   pagePath: string;
-  icon: ReactNode;
-  label?: string;
+  label: string;
 }
