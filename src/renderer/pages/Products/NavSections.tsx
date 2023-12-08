@@ -1,20 +1,18 @@
-import { BarChartIcon, ListBulletIcon, PlusIcon } from '@radix-ui/react-icons';
-
 import { PageLayoutSectionProps } from '../../styles/layout/interface';
 
 const productsNavSections: PageLayoutSectionProps[] = [
   {
-    icon: <ListBulletIcon />,
+    label: 'Lista',
     sectionPath: '',
     pagePath: 'products',
   },
   {
-    icon: <BarChartIcon />,
+    label: 'Relatório',
     sectionPath: 'report',
     pagePath: 'products',
   },
   {
-    icon: <PlusIcon />,
+    label: 'Criar',
     sectionPath: 'create',
     pagePath: 'products',
   },
