@@ -1,15 +1,13 @@
-import { ListBulletIcon, PlusIcon } from '@radix-ui/react-icons';
-
 import { PageLayoutSectionProps } from '../../styles/layout/interface';
 
 const movementNavSections: PageLayoutSectionProps[] = [
   {
-    icon: <ListBulletIcon />,
+    label: 'Lista',
     sectionPath: '',
     pagePath: 'movement',
   },
   {
-    icon: <PlusIcon />,
+    label: 'Criar',
     sectionPath: 'create',
     pagePath: 'movement',
   },

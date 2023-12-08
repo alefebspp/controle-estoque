@@ -1,17 +1,18 @@
-import { db } from '../config/db/firebase';
 import {
   doc,
   setDoc,
   Timestamp,
   query,
-  collection,
   where,
   getDocs,
-  getCountFromServer,
   limit,
   deleteDoc,
   updateDoc,
 } from 'firebase/firestore';
+
+import { generateUUID } from '../lib/helpers/generate-uuid';
+import { productsRef } from '../config/db/collections';
+import { db } from '../config/db/firebase';
 
 import { Product } from '../types/types';
 import { DefaultResponse } from '../types/services/response';
@@ -24,13 +25,10 @@ import {
   GetProductsParams,
   UpdateProductParams,
 } from '../types/services/products/requests';
-import { generateUUID } from '../lib/helpers/generate-uuid';
 
 export const findProduct = async (
   productId: string,
 ): Promise<FindProductResponse> => {
-  const productsRef = collection(db, 'products');
-
   let q = query(productsRef, where('id', '==', productId), limit(1));
 
   const docSnap = await getDocs(q);
@@ -55,8 +53,6 @@ export const updateProduct = async ({
   productId,
   data,
 }: UpdateProductParams): Promise<DefaultResponse> => {
-  const productsRef = collection(db, 'products');
-
   let q = query(productsRef, where('id', '==', productId), limit(1));
 
   const docSnap = await getDocs(q);
@@ -84,8 +80,6 @@ export const updateProduct = async ({
 export const deleteProduct = async (
   productId: string,
 ): Promise<DefaultResponse> => {
-  const productsRef = collection(db, 'products');
-
   let q = query(productsRef, where('id', '==', productId), limit(1));
 
   const docSnap = await getDocs(q);
@@ -112,8 +106,6 @@ export const getProducts = async ({
   userId,
   stablishmentId,
 }: GetProductsParams): Promise<GetProductsResponse> => {
-  const productsRef = collection(db, 'products');
-
   let q = query(
     productsRef,
     where('user_id', '==', userId),
@@ -140,8 +132,6 @@ export const createProduct = async ({
   userId,
   ...params
 }: CreateProductRequest): Promise<DefaultResponse> => {
-  const productsRef = collection(db, 'products');
-
   const { created_at, ...data } = params;
 
   if (!data.stablishment_id) {
