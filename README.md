@@ -8,9 +8,10 @@ Essa é uma aplicação que utiliza electron-js e firebase para fazer um control
 - Criar diversos estabelecimentos e adicionar produtos e movimentos específicos para um estabelecimento
 
 Outras tecnologias utilizadas na aplicação e peculiaridades:
--Utilização de Reactjs para o front-end
--Tailwindcss para estilização
--React query para gestão de estados das requisições e cache
--Customização do ícone de exibição em desktops
+- Utilização de Reactjs para o front-end
+- Tailwindcss para estilização
+- React query para gestão de estados das requisições e cache
+- Customização do ícone de exibição em desktops
+- Firebase Auth para segurança dos dados apenas no deployment de produção
 
 OBS: Aplicação testada apenas no SO Windows.
