@@ -16,7 +16,7 @@ Outras tecnologias utilizadas na aplicação e peculiaridades:
 
 OBS: Aplicação testada apenas no SO Windows.
 
-Link para download do app: https://1drv.ms/u/s!Avi1R0hCKVjtgZR_vtOz1x4rsE0cxQ (Seu Pc pode alertar sobre vírus, mas te garanto que não tem vírus algum)
-Credenciais de acesso: 
+Link para download do app: https://1drv.ms/u/s!Avi1R0hCKVjtgZR_vtOz1x4rsE0cxQ (Seu Pc pode alertar sobre vírus, mas te garanto que não tem vírus algum).
+Credenciais de acesso para testes: 
 - Email: test@hotmail.com
 - Senha: 123456
