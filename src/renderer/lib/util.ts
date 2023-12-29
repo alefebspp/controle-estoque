@@ -71,6 +71,12 @@ export function generatePdf({
     head: headers,
     body: data,
     startY: 50,
+    foot: [['Gerado pelo sistema Controle de estoque']],
+    footStyles: {
+      fillColor: '#FFF',
+      textColor: '#000',
+      fontSize: 8,
+    },
   });
   if (title) doc.text(title, marginLeft, 40);
   doc.save(fileName);
