@@ -190,8 +190,8 @@ const ProductsTable = ({ products, showTotal = false }: ProductsTableProps) => {
         downloadData={showTotal}
         products={selectedProducts}
       />
-      <div className=" md:max-h-[300px] lg:max-h-[400px] xl:max-h-[600px] overflow-y-auto">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <div className="md:max-h-[300px] lg:max-h-[400px] 2xl:max-h-[700px] overflow-y-auto">
+        <table className="w-full text-sm text-left rtl:text-right overflow-y-auto text-gray-500 dark:text-gray-400">
           <thead className="text-xs sticky top-0 text-graphite-500 uppercase bg-gray-200">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
