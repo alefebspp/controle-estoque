@@ -1,15 +1,20 @@
 import { createContext, FC, ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 import { DefaultResponse } from '../types/services/response';
 import { LoginRequest } from '../types/services/auth/requests';
 import { Stablishment, User } from '../types/types';
 
 import { db } from '../config/db/firebase';
-import { errorDefaultResponse } from '../lib/helpers/responses';
+import {
+  errorDefaultResponse,
+  authErrorResponse,
+} from '../lib/helpers/responses';
 import { getStablishment } from '../services/stablishment';
 import { showErrorToast } from '../lib/show-toast';
+import { isAuthError } from '../errors/isAuthError';
 
 export interface IAuthContextProps {
   user: User | undefined;
@@ -32,38 +37,73 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const authErrorResponse = (): DefaultResponse => ({
-    success: false,
-    message: 'Email ou senha incorretos',
-  });
+  const auth = getAuth();
+
+  const saveUserInfos = async (user: User, email: string) => {
+    setUser(user);
+    setIsLoggedIn(true);
+    window.electron.store.set('user-email', email);
+  };
+
+  const getUserByEmail = async (email: string) => {
+    try {
+      const docRef = doc(db, 'users', email);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists()) {
+        return {
+          success: false,
+          message: 'Usuário não existe',
+          data: null,
+        };
+      }
+
+      return {
+        success: true,
+        data: docSnap.data(),
+        message: 'Sucesso',
+      };
+    } catch (error) {
+      console.log(error);
+      return errorDefaultResponse();
+    }
+  };
 
   const login = async ({
     email,
     password,
   }: LoginRequest): Promise<DefaultResponse> => {
     try {
-      const docRef = doc(db, 'users', email);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const { password: docPassword, id, name } = docSnap.data();
+      await signInWithEmailAndPassword(auth, email, password);
 
-        if (password !== docPassword) {
-          return authErrorResponse();
-        }
+      const response = await getUserByEmail(email);
 
-        setUser({ id, name });
-        setIsLoggedIn(true);
-        window.electron.store.set('user-email', email);
-        navigate('/home');
-
+      if (!response.success) {
         return {
-          success: true,
-          message: 'Bem-vindo',
+          success: false,
+          message: response.message,
         };
-      } else {
-        return authErrorResponse();
       }
+
+      saveUserInfos(response.data, email);
+      navigate('/home');
+
+      return {
+        success: true,
+        message: 'Bem-vindo',
+      };
     } catch (error) {
+      console.log(error);
+      if (isAuthError(error)) {
+        const errorMessage = error.message;
+
+        if (errorMessage.includes('invalid-login-credentials')) {
+          return authErrorResponse({});
+        }
+        if (errorMessage.includes('auth/too-many-requests')) {
+          return authErrorResponse({ tooManyTries: true });
+        }
+      }
       return errorDefaultResponse();
     }
   };
@@ -81,15 +121,8 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    const persistLogin = async (email: string) => {
-      const docRef = doc(db, 'users', email);
-      const docSnap = await getDoc(docRef);
-      const userExists = docSnap.exists();
-      if (userExists) {
-        const password = docSnap.data().password;
-        await login({ email, password });
-      }
-    };
+    const userEmail = window.electron.store.get('user-email');
+    const savedStablishment = window.electron.store.get('stablishment-id');
 
     const getSavedStablishment = async (id: string) => {
       try {
@@ -106,13 +139,34 @@ export const AuthProvider: FC<IAuthProviderProps> = ({ children }) => {
       }
     };
 
-    const userEmail = window.electron.store.get('user-email');
-    const savedStablishment = window.electron.store.get('stablishment-id');
+    const persistLogin = async (email: string) => {
+      try {
+        const response = await getUserByEmail(email);
+
+        if (!response.success) {
+          return showErrorToast(response.message);
+        }
+
+        const loginResponse = await login({
+          email,
+          password: response.data.password,
+        });
+
+        if (!loginResponse.success) {
+          return showErrorToast(loginResponse.message);
+        }
+
+        if (savedStablishment) {
+          await getSavedStablishment(savedStablishment);
+        }
+      } catch (error) {
+        console.log(error);
+        return errorDefaultResponse();
+      }
+    };
+
     if (userEmail) {
       persistLogin(userEmail);
-    }
-    if (savedStablishment) {
-      getSavedStablishment(savedStablishment);
     }
   }, []);
 
