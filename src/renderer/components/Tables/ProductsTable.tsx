@@ -253,17 +253,20 @@ const ProductsTableHeader = ({
 
   let total: number = 0;
 
-  const tableData = products?.map((product) => {
-    const productTotal = product.sell_value * product.stock_quantity;
-    total += productTotal;
-    return [
-      product.description,
-      product.stock_quantity,
-      applyCurrency(productTotal),
-    ];
-  });
+  const tableData = products
+    .sort((a, b) => a.sell_value - b.sell_value)
+    ?.map((product) => {
+      const productTotal = product.sell_value * product.stock_quantity;
+      total += productTotal;
+      return [
+        product.description,
+        product.stock_quantity,
+        applyCurrency(productTotal),
+      ];
+    });
 
-  const tableTitle = `Total: ${applyCurrency(total as number)}`;
+  const tableTitle = `Gerado pelo sistema Controle de estoque`;
+  const tableFooter = [[`Total: ${applyCurrency(total)}`]];
   const tableHeaders = [['Descrição', 'Qtd. estoque', 'Total']];
   const fileName = 'relatorio_geral';
 
@@ -291,7 +294,13 @@ const ProductsTableHeader = ({
             </label>
             <Button
               onClick={() =>
-                generatePdf({ tableData, tableHeaders, tableTitle, fileName })
+                generatePdf({
+                  tableData,
+                  tableHeaders,
+                  tableTitle,
+                  fileName,
+                  tableFooter,
+                })
               }
               size="sm"
               variant="outline"

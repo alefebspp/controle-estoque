@@ -15,7 +15,7 @@ const Select = ({
   errors,
 }: SelectProps) => {
   return (
-    <div className={cn('flex flex-col min-w-[300px]', className)}>
+    <div className={cn('flex flex-col w-[300px]', className)}>
       <label
         htmlFor={name}
         className="block text-xs font-medium text-graphite-400 dark:text-white"

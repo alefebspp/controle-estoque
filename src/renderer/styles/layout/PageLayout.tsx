@@ -53,9 +53,9 @@ const PageLayoutSection = ({
     <div
       onClick={handleNavigate}
       className={cn(
-        'flex items-center justify-center text-xs xl:text-sm font-semibold text-graphite-400 hover:text-secondary-neon cursor-pointer',
+        'flex items-center justify-center px-4 py-[0.2rem] text-xs rounded-3xl xl:text-sm font-semibold text-secondary-neon opacity-50 hover:opacity-100 bg-[#d4fff4] cursor-pointer ',
         {
-          'text-secondary-neon': isActive,
+          'opacity-100': isActive,
         },
       )}
     >
