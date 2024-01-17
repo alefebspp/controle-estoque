@@ -8,6 +8,7 @@ interface IGeneratePDFProps {
   tableData?: any;
   tableTitle?: string | string[];
   tableHeaders?: string[][];
+  tableFooter: string[][];
   fileName?: string;
 }
 
@@ -52,6 +53,7 @@ export function generatePdf({
   tableHeaders,
   tableTitle,
   fileName,
+  tableFooter,
 }: IGeneratePDFProps) {
   const unit = 'pt';
   const size = 'A4'; // Use A1, A2, A3 or A4
@@ -64,6 +66,7 @@ export function generatePdf({
 
   const title = tableTitle;
   const headers = tableHeaders;
+  const footer = tableFooter;
 
   const data = tableData;
 
@@ -71,11 +74,13 @@ export function generatePdf({
     head: headers,
     body: data,
     startY: 50,
-    foot: [['Gerado pelo sistema Controle de estoque']],
+    showFoot: 'lastPage',
+    showHead: 'firstPage',
+    foot: footer,
     footStyles: {
       fillColor: '#FFF',
       textColor: '#000',
-      fontSize: 8,
+      fontSize: 15,
     },
   });
   if (title) doc.text(title, marginLeft, 40);

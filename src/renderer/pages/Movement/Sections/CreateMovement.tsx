@@ -13,6 +13,8 @@ import { useGetProducts } from '../../../hooks/useProducts';
 import { useCreateMovement } from '../../../hooks/useMovement';
 import { MovementType } from '../../../types/types';
 
+import { compareTextsWithNumbers } from '../../../lib/helpers/sorts';
+
 export const CreateMovement = () => {
   const { user, stablishment } = useAuthContext();
 
@@ -24,10 +26,12 @@ export const CreateMovement = () => {
   const { mutateAsync } = useCreateMovement();
 
   const productsOptions =
-    data?.products.map((product) => ({
-      label: product.description,
-      value: product.id,
-    })) || [];
+    data?.products
+      .sort((a, b) => compareTextsWithNumbers(a.description, b.description))
+      .map((product) => ({
+        label: product.description,
+        value: product.id,
+      })) || [];
 
   const {
     register,
