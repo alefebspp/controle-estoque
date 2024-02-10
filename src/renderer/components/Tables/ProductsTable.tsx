@@ -40,6 +40,7 @@ import { useDeleteProduct } from '../../hooks/useProducts';
 import { showLoadingToast, dismissLoadingToast } from '../../lib/show-toast';
 import { applyCurrency } from '../../lib/masks';
 import { generatePdf, generateExcel } from '../../lib/util';
+import { compareTextsWithNumbers } from '../../lib/helpers/sorts';
 
 const ProductsTable = ({ products, showTotal = false }: ProductsTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -254,7 +255,7 @@ const ProductsTableHeader = ({
   let total: number = 0;
 
   const tableData = products
-    .sort((a, b) => a.sell_value - b.sell_value)
+    .sort((a, b) => compareTextsWithNumbers(a.description, b.description))
     ?.map((product) => {
       const productTotal = product.sell_value * product.stock_quantity;
       total += productTotal;
