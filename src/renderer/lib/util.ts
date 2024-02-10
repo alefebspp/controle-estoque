@@ -70,6 +70,8 @@ export function generatePdf({
 
   const data = tableData;
 
+  if (title) doc.text(title, marginLeft, 40);
+
   autoTable(doc, {
     head: headers,
     body: data,
@@ -83,6 +85,5 @@ export function generatePdf({
       fontSize: 15,
     },
   });
-  if (title) doc.text(title, marginLeft, 40);
   doc.save(fileName);
 }
